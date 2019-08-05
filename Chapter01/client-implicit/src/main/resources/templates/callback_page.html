@@ -5,7 +5,7 @@
 </head>
 <body>
 Friends who has also granted client-implicit
-<div id="friends">
+<div id="permissions">
 	<ul>
 	</ul>
 </div>
@@ -23,13 +23,13 @@ $(document).ready(function() {
 
 	if (res.hasError()) {
 		$("<div>Error trying to obtain user's authorization!</div>")
-			.insertBefore('#friends');
+			.insertBefore('#permissions');
 		return;
 	}
 
-	getFriends(res['access_token'], function(friends) {
-		$(friends).each(function(index, friend) {
-			$('#friends').find('ul').append('<li>' + friend.name + '</li>');
+	getFriends(res['access_token'], function(permissions) {
+		$(permissions).each(function(index, permission) {
+			$('#permissions').find('ul').append('<li>' + permission.permission +':'+ permission.status+ '</li>');
 		});
 	});
 
@@ -52,8 +52,8 @@ function getResponse(fragment) {
 }
 
 function getFriends(accessToken, callback) {
-	var baseUrl = 'https://graph.facebook.com/v2.9/';
-	var endpoint ='me/friends';
+	var baseUrl = 'https://graph.facebook.com/v4.0/';
+	var endpoint ='me/permissions';
 	var url = baseUrl + endpoint;
 
 	$.ajax({
@@ -62,8 +62,8 @@ function getFriends(accessToken, callback) {
             xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
         },
         success: function(result){
-			var friends = result.data;
-			callback(friends);
+			var permissions = result.data;
+			callback(permissions);
         },
         error: function(jqXHR, textStatus, errorThrown)   {
             console.log(textStatus);
